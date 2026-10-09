@@ -1,3 +1,6 @@
+
+https://github.com/user-attachments/assets/f4671c74-825d-45e3-bb87-1d5bbdea6052
+
 # RFG Physics Sandbox
 
 A Windows sandbox for exploring destruction from the **original Red Faction Guerrilla**. Built with Rust, Bevy and Avian, it converts data from your own game installation into a playable district where you can swing the sledgehammer, remove supports and watch structures collapse.
