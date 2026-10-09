@@ -41,7 +41,37 @@ set "PATH=%USERPROFILE%\.cargo\bin;%PATH%"
 
 where cargo >nul 2>nul
 if errorlevel 1 goto :nocargo
-echo Building sandbox (%PROFILE%)...
+
+REM Building uses one CPU core per job. Ask how many to use (default 4), clamped to 1..all cores.
+REM Set CARGO_BUILD_JOBS beforehand to skip the prompt.
+if defined CARGO_BUILD_JOBS goto :build
+set "MAX_CORES=%NUMBER_OF_PROCESSORS%"
+if not defined MAX_CORES set "MAX_CORES=1"
+set "BUILD_CORES=4"
+if %MAX_CORES% LSS 4 set "BUILD_CORES=%MAX_CORES%"
+echo.
+echo Building is CPU heavy; the first build compiles every dependency and can take several minutes.
+echo More cores build faster but leave less CPU for other programs. 1 core is extremely slow.
+set "CORES_INPUT="
+set /p "CORES_INPUT=CPU cores to use for building [%BUILD_CORES%] (you have %MAX_CORES%): "
+if not defined CORES_INPUT goto :coresok
+REM Accept digits only; anything else keeps the default.
+echo %CORES_INPUT%| findstr /r "^[0-9][0-9]*$" >nul || (
+    echo Not a number, using %BUILD_CORES%.
+    goto :coresok
+)
+REM Strip leading zeros (set /a would read them as octal) and treat huge values as "all".
+for /f "tokens=* delims=0" %%N in ("%CORES_INPUT%") do set "CORES_INPUT=%%N"
+if not defined CORES_INPUT set "CORES_INPUT=0"
+if not "%CORES_INPUT:~4%"=="" set "CORES_INPUT=%MAX_CORES%"
+set /a BUILD_CORES=CORES_INPUT
+if %BUILD_CORES% GTR %MAX_CORES% set "BUILD_CORES=%MAX_CORES%"
+if %BUILD_CORES% LSS 1 set "BUILD_CORES=1"
+:coresok
+set "CARGO_BUILD_JOBS=%BUILD_CORES%"
+
+:build
+echo Building sandbox (%PROFILE%) using %CARGO_BUILD_JOBS% core(s)...
 cargo build -p sandbox %CARGO_FLAGS%
 if errorlevel 1 goto :fail
 goto :run

@@ -57,7 +57,7 @@ For normal play, use the optimized build:
 Play.bat release
 ```
 
-The first build can take a while. Later runs reuse the compiled dependencies. Double-clicking `Play.bat` builds the development profile, which is useful while changing code but slower with many buildings.
+The first build can take a while and keeps the CPU busy. Before building, `Play.bat` asks how many CPU cores to use (default 4, up to all of them); fewer cores keep your PC responsive but build slower, and 1 core is extremely slow. Set `CARGO_BUILD_JOBS` beforehand to skip the prompt. Later runs reuse the compiled dependencies. Double-clicking `Play.bat` builds the development profile, which is useful while changing code but slower with many buildings.
 
 To start near a specific lot:
 
