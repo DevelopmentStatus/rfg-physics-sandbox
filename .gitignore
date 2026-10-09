@@ -1,0 +1,27 @@
+# Everything generated or taken from the game stays out of the repository.
+/LocalData/
+/Config/local.toml
+/target/
+__pycache__/
+*.pyc
+imgui.ini
+
+# Safety net against accidentally adding game data, dumps or decompiled code.
+*.dmp
+*.bin
+*.glb
+*.gltf
+*.vpp_pc
+*.str2_pc
+*.cpeg_pc
+*.gpeg_pc
+*.cchk_pc
+*.gchk_pc
+*.anim_pc
+*.png
+*.tga
+*.dds
+*.rep/
+*.gpr
+.gamedb/
+fn_*.c

@@ -1,0 +1,23 @@
+{
+ "game": {
+  "name": "Red Faction Guerrilla",
+  "version": "1.0.2.1",
+  "steam_app_id": 20500,
+  "exe": "RFG.exe",
+  "exe_size": 9168528,
+  "exe_sha256": "0606bbed95481ee6d54b5a926adaccaa29db6e2e42e2fff09fe9dfd25946c72d",
+  "pe_link_timestamp": "0x584e8db8 (2016-12-12)",
+  "note": "32-bit PE, packed on disk (.bind section, Steam DRM). Analyse a memory image, not the file."
+ },
+ "memory_image": {
+  "description": "Unpacked .text + .rdata read from the running game; file offset == RVA; load at base 0x400000",
+  "image_base": "0x00400000",
+  "covers_va": "0x00401000-0x00B5D000 (exclusive)",
+  "size": 7720960,
+  "sha256": "5c8cdd679f16d1a629ec27734f1b738d453d4fcd29669087469df44dff0aa562",
+  "text_sha256": "01e832b2c2349dea889f67384dbcc88f114181f45d59dc50fafea6020a822c3d",
+  "text_rva": "0x1000-0x6c9000",
+  "rdata_sha256": "d07dc48985f407e8c4b741dd67c4dff586f71d3034d2755669c6f76644fb7dc3",
+  "rdata_rva": "0x6c9000-0x75d000"
+ }
+}

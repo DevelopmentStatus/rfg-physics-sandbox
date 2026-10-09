@@ -1,0 +1,74 @@
+address,kind,proposed_name,area,summary,evidence,confidence,in_dump
+004b8920,function,CameraShakeLoadTable,camera-shake,Parses camera_shake.xtbl into 0x280-byte records,E-030,High,yes
+004b93e0,function,CameraShakeStart,camera-shake,Starts a shake: reuses the slot already playing it (restart) or the first free of 5,E-030,High,yes
+004b9810,function,CameraShakeEvaluate,camera-shake,"Per-frame evaluation over 5 slots; result (pitch, roll, yaw) radians",E-030,High,yes
+00619990,function,DamageRecordEncode,damage,Packs damage into a record: 11-bit mantissa + 5-bit shift,E-028,High,yes
+006ce470,function,PieceDestroyPush_e470,glass,Push and destroy helper used by the glass blow-out,E-031,Medium,yes
+006cead0,function,CreateIslandRigidBody,islands,Rigid-body creation for a split-off group,E-026,Medium,yes
+006d08c0,function,DestroyableContactRecordA,contacts,Contact records with the world (table at 0x018b80c8); roots of the stress pass. Not yet decoded,E-024,Low,yes
+006d09c0,function,DestroyableContactRecordB,contacts,"Contact records, companion of FUN_006d08c0. Not yet decoded",E-024,Low,yes
+006d0aa0,function,StructureSplitIslands,islands,"After breaks, groups no longer reaching a supported piece split into their own rigid body",E-026,High,yes
+006d3f60,function,GlassBlowOut,glass,"Destroys and pushes every shatter piece whose bounds overlap center +/- max(sqrt(damage)*0.04, MP ? 0.1 : 0)",E-031,High,yes
+006d4290,function,PieceApplyDamage,damage,"Damage one piece at a point: subtract hit points, damage links, break neighbours",E-025,High,yes
+006d4890,function,PieceApplyDamageCaller,damage,Caller of FUN_006d4290,E-025,Medium,yes
+006d5010,function,DamageRecordDecode,damage,Decodes the packed damage record,E-028,High,yes
+006d5fc0,code,LinkBreakNeighbourCallback,damage,Callback that damages the neighbour piece with the overflow * 1/Brittleness when a link breaks. Ghidra does not define a function here in the dump; create it manually,E-025,Medium,yes
+006d6050,function,PieceDamageDispatch,damage,"Caller of FUN_006d4290; effect thresholds 200,000 / 1,000,000 / 5,000,000; triggers glass blow-out above 200,000",E-025 E-031,Medium,yes
+006da810,function,PieceIsLarge,damage,"Big-piece check: larger than 3 m or 10 m^3 takes no link damage (thresholds 0x00aeeb1c, 0x00aeef00)",E-025,High,yes
+006dcd90,function,ParseMaterialRecord,chunk-load,rfg_materials.xtbl record parser (0x4C bytes); see structs.md,E-023,High,yes
+006dfe10,function,PieceDestroyPush_fe10,glass,Push and destroy helper used by the glass blow-out,E-031,Medium,yes
+006e2080,function,BuildingDamageVirtual,damage,"Building damage virtual (vtable 0x00b21870 slot 0x80): damage float, kind, pos, dir, attacker, piece; kinds 3 bullet / 4 explosion / 5 melee",E-028,High,yes
+006e23ed,code,DamageX100Site,damage,Instruction in FUN_006e2080 that applies the x100 conversion (__ftol(damage * 100.0)),E-028,High,yes
+006eb140,function,PieceHitPoints,damage,(int)(dx*dz*256) * (LinkStrength*1000 << 8) >> 16; foundation 0x7FFFFFFF,E-025,High,yes
+006ebe00,function,PieceDestroyPush_be00,glass,Push and destroy helper used by the glass blow-out,E-031,Medium,yes
+006ece30,function,SubpieceInitMaterialAndMass,chunk-load,"Subpiece material lookup by name hash, mass = volume * Density, piece flags (shatter 0x42, non-structural 0x08), link start state",E-023,High,yes
+006eda80,function,StressWaves_da80,stress,One of three wave-building passes: breadth-first waves from root pieces,E-024,Medium,yes
+006edbd0,function,StressWaves_dbd0,stress,One of three wave-building passes: breadth-first waves from root pieces,E-024,Medium,yes
+006edf50,function,StressWaves_df50,stress,One of three wave-building passes: breadth-first waves from root pieces,E-024,Medium,yes
+006ee420,function,StressLever,stress,"Lever = |d| * max(1 - max(d.y/|d|,0)^2, 0.25); d = load centre - centre of the pieces' bound overlap",E-024,High,yes
+006ee5b0,function,StressDeepestWaveFirst,stress,Processes the deepest wave first; splits each piece load over its supports,E-024,High,yes
+006eeff0,function,StressClusters,stress,Per wave: clusters of same-wave pieces; breaks support links when sum(strength) < round(sum(stress)),E-024,High,yes
+006f0310,function,StressRepeatDelay,stress,"Repeat-delay logic: busy objects repeat after ~Repeat_Delay_Min, else Repeat_Delay_Max",E-024,Medium,yes
+007295d0,function,PropPointNameLookupA,tags,Prop-point name lookup,E-029,Low,yes
+0074d270,function,CameraBlurSink,camera-shake,Receives the shake blur graph value,E-030,Medium,yes
+00765a50,function,PhysicsCast,melee,Physics cast used by the melee sweep,E-029,Medium,yes
+00774120,function,PlaceTagOnTag,held-items,Tag-on-tag placement used by held items,E-029,Medium,yes
+007baf30,function,PropPointNameLookupB,tags,Prop-point name lookup,E-029,Low,yes
+007c5e80,function,HeldItemAttachB,held-items,"Held-item placement, leads to FUN_00774120",E-029,Medium,yes
+007cea00,function,HeldItemAttachA,held-items,Held-item placement: weapon weapon_handle tag placed on the human R_hand/L_hand tag,E-029,Medium,yes
+007d7260,function,MeleeGetAttackPoint,melee,"Attack point: weapon tags destruction/destruction2, else muzzle_flash/weapon_handle; hands use rig tags",E-029,High,yes
+007d7610,function,ParseMeleeAttackRecord,melee,melee.xtbl attack record parser (0x50 bytes); see structs.md,E-028,High,yes
+007d7d90,function,MeleeDamageFalloff,melee,"Damage = per-target damage * ((1 - min(n/100,1)) * 0.8 + 0.2), n = hits so far this attack (human+0x970)",E-029,High,yes
+007d82d0,function,MeleeHandleResult,melee,"Per-result handler: damage via FUN_007d7d90, starts the attack's CameraShake",E-029,High,yes
+007d8770,function,MeleeSweepCast,melee,Wraps the cast FUN_00765a50,E-029,High,yes
+007d9010,function,MeleeSweepSphere,melee,Sphere sweep of HitRadius from last frame's position to this one,E-029,High,yes
+007d9600,function,MeleeTick,melee,"Per-frame melee tick: between the clip's impact-start and impact-end tags, sweeps the attack point",E-029,High,yes
+007dbe30,function,MeleeAttackReset,melee,Per-attack reset (hit count at human+0x970),E-029,High,yes
+009eab20,function,ClosestPointRoutine,util,Closest-point routine named in the destruction notes; not ported,E-022,Low,yes
+009ee7d0,function,TimerAdvance,camera-shake,Timer helper: periods lose the overshoot,E-030,Medium,yes
+009ee8c0,function,TimerHelperB,camera-shake,"Timer helper (noted as ""/8c0"")",E-030,Low,yes
+009ee900,function,TimerHelperC,camera-shake,"Timer helper (noted as ""/900"")",E-030,Low,yes
+009f0d30,function,EulerToRotationRows,camera-shake,"Rotation rows from pitch, roll, yaw (formula in E-030)",E-030,High,yes
+009ffbe0,function,RumbleSink,camera-shake,Receives the shake rumble value,E-030,Medium,yes
+00a03310,function,HashNameCrc32Lower,util,"CRC32 over the lowercased string (table at 0x00b648b0, zero seed, no final xor); name hashes for materials, shaders, mesh tags",E-023 E-029 E-031,High,yes
+00a1ab40,function,AnimFindKey,animation,Key search; key frame numbers compared against time * 0.0125 (1/80),E-017,High,yes
+00a1ab90,function,AnimFindKeyVariant,animation,"Second key-search entry noted with FUN_00a1ab40 (""ab40/ab90"")",E-017,Medium,yes
+00a1ac30,function,AnimSampleRotation,animation,"Rotation sampler: block base + scale * cumulative delta, /16383, slerp",E-017,High,yes
+00a1b460,function,AnimSamplePosition,animation,"Position sampler: i16 base / 64 + i8 delta / 4000, lerp",E-017,High,yes
+00a1b9f0,function,AnimBuildScaleTable,animation,Builds the 256-entry per-component scale table at 0x00d9eb50,E-017,High,yes
+00a1dfe0,function,AnimLayoutTrack,animation,"Per-track layout: rotation blocks/deltas/times, position blocks/deltas/times, extra channel",E-017,High,yes
+00a1e190,function,AnimStreamStart,animation,"Finds the start of the key stream: optional track->bone map, optional seek table (flag 0x40)",E-017,High,yes
+00ad6440,float,StressLeverMinFactorA,stress,"Lower bound of the lever direction factor (0.25), with 0x00b4c860",E-024,Low,yes
+00aeeb1c,float,PieceLargeSizeLimit,damage,Threshold used by FUN_006da810 (3 m),E-025,Medium,yes
+00aeef00,float,PieceLargeVolumeLimit,damage,Threshold used by FUN_006da810 (10 m^3),E-025,Medium,yes
+00af0298,float,BulletMultiplier,damage,f32 200: bullet damage multiplier on other pieces,E-028,High,yes
+00af5ec0,float,BulletShatterMultiplier,damage,f32 7.5: bullet damage multiplier on shatter pieces,E-028,High,yes
+00b21870,vtable,BuildingDamageVtable,damage,Vtable of the building damage handler; slot 0x80 = FUN_006e2080,E-028,High,yes
+00b4c708,double,DamageScaleX100,damage,f64 100.0: melee/explosion damage -> piece damage (used at 0x006e23ed),E-028,High,yes
+00b4c860,float,StressLeverMinFactorB,stress,"Lower bound of the lever direction factor, with 0x00ad6440",E-024,Low,yes
+00b4cff8,float,VolumeToMassMin,chunk-load,f32 0.004: subpiece volume threshold above which Density multiplies it,E-023,High,yes
+00b4d078,double,StressGravity,stress,f64 gravity constant the stress code multiplies by,E-024,Medium,yes
+00b648b0,table,Crc32Table,util,CRC32 lookup table used by FUN_00a03310 (outside the dumped range),E-023,High,no
+00b7e010,table,MaterialFlagTable,chunk-load,"Material flag table (.data, not in the dump)",E-023,Low,no
+00d9eb50,table,AnimScaleTable,animation,"256-entry per-component scale table built by FUN_00a1b9f0 (.data, not in the dump)",E-017,High,no
+018b80c8,table,DestroyableContactTable,contacts,"Contact-record table (.data, not in the dump)",E-024,Low,no
