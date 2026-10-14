@@ -3,7 +3,7 @@ https://github.com/user-attachments/assets/3beb2b6d-2843-46a8-b194-aaa277c2ef90
 
 # RFG Physics Sandbox
 
-A Windows sandbox for exploring destruction from the **original Red Faction Guerrilla**. Built with Rust, Bevy and Avian, it converts data from your own game installation into a playable district where you can swing the sledgehammer, remove supports and watch structures collapse.
+A Windows and macOS sandbox for exploring destruction from the **original Red Faction Guerrilla**. Built with Rust, Bevy and Avian, it converts data from your own game installation into a playable district where you can swing the sledgehammer, remove supports and watch structures collapse.
 
 > **Original game only. Re-Mars-tered is NOT supported.**
 > This project targets the original game's Steam build, version **1.0.2.1** (Steam app **20500**). The remaster uses different formats.
@@ -22,7 +22,7 @@ This is an experimental reconstruction. Root detection and collision shapes are 
 
 ## Requirements
 
-- Windows.
+- Windows or macOS (Apple Silicon or Intel). Linux should work the same way as macOS but is untested. See [macOS and Linux](#macos-and-linux).
 - Your own installation of **Red Faction Guerrilla, original Steam build 1.0.2.1**.
 - [Rust](https://rustup.rs). Complete any Windows C++ build tools setup requested by the installer. The repository selects Rust **1.95.0** automatically.
 - [Python 3.9 or newer](https://www.python.org/downloads/windows/). Enable the Python launcher or add Python to PATH during installation.
@@ -64,6 +64,20 @@ To start near a specific lot:
 ```bat
 Play.bat release 0203house01_a
 ```
+
+## macOS and Linux
+
+The sandbox builds and runs natively on macOS (Metal) and Linux. The game itself is Windows-only, so you need its files somewhere on disk: a Steam install inside **CrossOver**, **Whisky** or **Wine**, or the game folder copied from a Windows PC. Any folder that holds `RFG.exe` and `build/pc/cache` works.
+
+Use the `.sh` scripts in place of the `.bat` files. Install Python 3.9+ (`brew install python`) and Rust (`brew install rustup` or [rustup.rs](https://rustup.rs)) first.
+
+```sh
+./ExtractAssets.sh                      # finds Steam in CrossOver/Whisky/Wine bottles, else opens a folder picker
+./ExtractAssets.sh "/path/to/Red Faction Guerrilla" --chunks 0203house01_a
+./Play.sh release                       # or: ./Play.sh release 0203house01_a
+```
+
+The scripts take the same options as their Windows counterparts. `Play.sh` also finds Homebrew's `rustup`, which is not on `PATH` by default.
 
 ## Controls
 
@@ -151,7 +165,7 @@ The selected game folder is remembered in `LocalData\game_dir.txt`. Pass another
 | `Sandbox/` | Bevy application, character, tools, UI and building simulation |
 | `Crates/destruction/` | Structural stress, damage and island splitting, independent of Bevy |
 | `Crates/physics/` | Reserved rigid-body backend boundary |
-| `Extractors/` | Archive readers, asset converters, validation and Windows folder picker |
+| `Extractors/` | Archive readers, asset converters, validation, Steam discovery and Windows folder picker |
 | `Research/` | Findings, evidence IDs and player asset inventory |
 | `Docs/` | Destruction pipeline and fidelity notes |
 | `ReverseEngineering/` | Function addresses, proposed names, call graph and structure layouts |
@@ -166,7 +180,7 @@ cargo test --locked -p rfg_destruction -p rfg_physics
 python -m unittest discover -s Tests -v
 ```
 
-The Python regression tests require NumPy, Pillow and SciPy for converter tests. After extraction setup, you can use `LocalData\venv\Scripts\python.exe` instead of `python`.
+The Python regression tests require NumPy, Pillow and SciPy for converter tests. After extraction setup, you can use `LocalData\venv\Scripts\python.exe` (`LocalData/venv/bin/python` on macOS and Linux) instead of `python`.
 
 The Rust tests run without game assets. The building-data test skips when local assets are absent; it does not replace gameplay validation against the original game.
 
