@@ -1,0 +1,28 @@
+name: mac-test
+on: [push, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Python tests
+        run: |
+          pip install numpy pillow scipy
+          python -m unittest discover -s Tests -v
+
+      - name: Shell scripts (macOS /bin/bash 3.2)
+        run: |
+          git ls-files -s Play.sh ExtractAssets.sh
+          test -x Play.sh && test -x ExtractAssets.sh
+          /bin/bash --version | head -n 1
+          /bin/bash -n Play.sh
+          /bin/bash -n ExtractAssets.sh
+
+      - name: Rust build and tests
+        run: cargo test --locked -p rfg_destruction -p rfg_physics -p sandbox
